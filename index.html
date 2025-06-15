@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Flashcard Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    textarea {
+      width: 90%;
+      max-width: 800px;
+      height: 200px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    .flashcards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .card {
+      width: 250px;
+      height: 150px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin: 10px;
+      padding: 15px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .question {
+      font-weight: bold;
+      color: #1e293b;
+    }
+    .answer {
+      margin-top: 10px;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>AI Flashcard Generator</h1>
+  <textarea id="notesInput" placeholder="Paste your notes here..."></textarea>
+  <button onclick="generateFlashcards()">Generate Flashcards</button>
+
+  <div class="flashcards" id="flashcardsContainer"></div>
+
+  <script>
+    async function generateFlashcards() {
+      const notesText = document.getElementById('notesInput').value;
+      if (!notesText.trim()) {
+        alert('Please paste your notes.');
+        return;
+      }
+
+      const apiKey = prompt('Enter your OpenAI API Key');
+      if (!apiKey) return;
+
+      const endpoint = 'https://api.openai.com/v1/chat/completions';
+      const prompt = `Summarize the following notes and convert them into flashcards with a question and answer format. Respond as a JSON array like: [{"question": "...", "answer": "..."}]
+
+Notes:\n\n${notesText}`;
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { role: 'system', content: 'You are a helpful assistant that summarizes notes into flashcards.' },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      let cards = [];
+      try {
+        cards = JSON.parse(data.choices[0].message.content);
+      } catch (e) {
+        alert('Failed to parse response. Please try again.');
+        return;
+      }
+
+      const container = document.getElementById('flashcardsContainer');
+      container.innerHTML = '';
+      cards.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<div class="question">${card.question}</div><div class="answer">${card.answer}</div>`;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
