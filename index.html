@@ -61,7 +61,7 @@
       font-size: 0.95rem;
     }
 
-    textarea, input {
+    textarea {
       width: 100%;
       padding: 12px 16px;
       border: 2px solid #e5e7eb;
@@ -71,7 +71,7 @@
       font-family: inherit;
     }
 
-    textarea:focus, input:focus {
+    textarea:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -80,10 +80,6 @@
     textarea {
       height: 200px;
       resize: vertical;
-    }
-
-    input[type="password"] {
-      font-family: monospace;
     }
 
     .generate-btn {
@@ -210,16 +206,6 @@
       margin: 20px 0;
     }
 
-    .api-key-info {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      margin-top: 8px;
-    }
-
     @media (max-width: 768px) {
       .header h1 {
         font-size: 2rem;
@@ -251,19 +237,6 @@
         ></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="apiKeyInput">OpenAI API Key</label>
-        <input 
-          type="password" 
-          id="apiKeyInput" 
-          placeholder="sk-..."
-        >
-        <div class="api-key-info">
-          Your API key is processed securely and never stored. Get your key from 
-          <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a>.
-        </div>
-      </div>
-
       <button class="generate-btn" onclick="generateFlashcards()">
         Generate Flashcards
       </button>
@@ -281,7 +254,6 @@
   <script>
     async function generateFlashcards() {
       const notesText = document.getElementById('notesInput').value.trim();
-      const apiKey = document.getElementById('apiKeyInput').value.trim();
       const loadingEl = document.getElementById('loading');
       const errorContainer = document.getElementById('errorContainer');
       const generateBtn = document.querySelector('.generate-btn');
@@ -291,11 +263,6 @@
       
       if (!notesText) {
         showError('Please enter your notes.');
-        return;
-      }
-      
-      if (!apiKey) {
-        showError('Please enter your OpenAI API key.');
         return;
       }
 
@@ -311,8 +278,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            notes: notesText,
-            apiKey: apiKey
+            notes: notesText
           })
         });
 

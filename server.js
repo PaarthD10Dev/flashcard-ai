@@ -12,10 +12,14 @@ app.use(express.json());
 
 app.post('/api/generate-flashcards', async (req, res) => {
   try {
-    const { notes, apiKey } = req.body;
+    const { notes } = req.body;
     
-    if (!notes || !apiKey) {
-      return res.status(400).json({ error: 'Notes and API key are required' });
+    if (!notes) {
+      return res.status(400).json({ error: 'Notes are required' });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
 
     const prompt = `Summarize the following notes and convert them into flashcards with a question and answer format. Respond as a JSON array like: [{"question": "...", "answer": "..."}]
@@ -28,7 +32,7 @@ ${notes}`;
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-4',
