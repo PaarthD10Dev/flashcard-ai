@@ -41,6 +41,24 @@
       font-size: 1.1rem;
     }
 
+    .powered-by {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .gemini-logo {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     .input-section {
       background: white;
       border-radius: 16px;
@@ -226,6 +244,10 @@
     <div class="header">
       <h1>AI Flashcard Generator</h1>
       <p>Transform your notes into interactive flashcards with AI</p>
+      <div class="powered-by">
+        <span class="gemini-logo"></span>
+        Powered by Google Gemini
+      </div>
     </div>
 
     <div class="input-section">
@@ -244,7 +266,7 @@
 
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      Generating flashcards with AI...
+      Generating flashcards with Gemini AI...
     </div>
 
     <div id="errorContainer"></div>
