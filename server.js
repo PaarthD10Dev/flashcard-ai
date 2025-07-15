@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import multer from 'multer';
+import fs from 'fs';
+import pdfParse from 'pdf-parse';
 
 dotenv.config();
 
@@ -12,6 +15,35 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3001;
 
+// Configure multer for file uploads
+const upload = multer({
+  dest: 'uploads/',
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'application/pdf',
+      'text/plain',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'audio/mpeg',
+      'audio/wav',
+      'audio/mp4',
+      'audio/ogg',
+      'video/mp4',
+      'video/avi',
+      'video/quicktime',
+      'video/x-msvideo'
+    ];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Unsupported file type'), false);
+    }
+  }
+});
 app.use(cors());
 app.use(express.json());
 
@@ -33,6 +65,82 @@ app.get('/dashboard.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
+app.post('/api/process-files', upload.array('files', 10), async (req, res) => {
+  try {
+    const files = req.files;
+    const type = req.body.type;
+    
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    let extractedText = '';
+    let processedCount = 0;
+
+    for (const file of files) {
+      try {
+        let fileText = '';
+        
+        if (file.mimetype === 'application/pdf') {
+          // Process PDF
+          const dataBuffer = fs.readFileSync(file.path);
+          const pdfData = await pdfParse(dataBuffer);
+          fileText = pdfData.text;
+        } else if (file.mimetype === 'text/plain') {
+          // Process text file
+          fileText = fs.readFileSync(file.path, 'utf8');
+        } else if (file.mimetype.startsWith('audio/')) {
+          // For audio files, we'll need speech-to-text
+          fileText = `[Audio file: ${file.originalname}] - Audio transcription would require additional speech-to-text service integration.`;
+        } else if (file.mimetype.startsWith('video/')) {
+          // For video files, we'll need video processing
+          fileText = `[Video file: ${file.originalname}] - Video transcription would require additional video processing service integration.`;
+        } else {
+          fileText = `[Document: ${file.originalname}] - Document processing for this file type is not yet implemented.`;
+        }
+        
+        extractedText += `\n\n--- Content from ${file.originalname} ---\n${fileText}`;
+        processedCount++;
+        
+        // Clean up uploaded file
+        fs.unlinkSync(file.path);
+      } catch (fileError) {
+        console.error(`Error processing file ${file.originalname}:`, fileError);
+        // Clean up file even if processing failed
+        try {
+          fs.unlinkSync(file.path);
+        } catch (unlinkError) {
+          console.error('Error cleaning up file:', unlinkError);
+        }
+      }
+    }
+
+    if (extractedText.trim() === '') {
+      return res.status(400).json({ error: 'No text could be extracted from the uploaded files' });
+    }
+
+    res.json({
+      message: `Successfully processed ${processedCount} file(s)`,
+      extractedText: extractedText.trim()
+    });
+
+  } catch (error) {
+    console.error('File processing error:', error);
+    
+    // Clean up any uploaded files in case of error
+    if (req.files) {
+      req.files.forEach(file => {
+        try {
+          fs.unlinkSync(file.path);
+        } catch (unlinkError) {
+          console.error('Error cleaning up file:', unlinkError);
+        }
+      });
+    }
+    
+    res.status(500).json({ error: 'File processing failed' });
+  }
+});
 app.post('/api/generate-flashcards', async (req, res) => {
   try {
     const { notes } = req.body;

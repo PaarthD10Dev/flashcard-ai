@@ -145,6 +145,49 @@
       100% { transform: translateX(100%); }
     }
 
+    .input-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 30px;
+      background: #0a0a0a;
+      border-radius: 12px;
+      padding: 4px;
+      border: 2px solid #222222;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      color: #888888;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      color: #000000;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
     .form-group {
       margin-bottom: 20px;
     }
@@ -169,6 +212,8 @@
       font-family: inherit;
       background: #000000;
       color: #ffffff;
+      height: 200px;
+      resize: vertical;
     }
 
     textarea:focus {
@@ -177,9 +222,108 @@
       box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
     }
 
-    textarea {
-      height: 200px;
-      resize: vertical;
+    .file-upload {
+      border: 3px dashed #333333;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: #0a0a0a;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .file-upload.dragover {
+      border-color: #00ff41;
+      background: rgba(0, 255, 65, 0.05);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    }
+
+    .file-upload input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      color: #00ffff;
+    }
+
+    .upload-text {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .upload-subtext {
+      color: #888888;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .file-list {
+      margin-top: 20px;
+    }
+
+    .file-item {
+      background: #1a1a1a;
+      border: 2px solid #333333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .file-icon {
+      font-size: 1.5rem;
+    }
+
+    .file-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .file-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .file-size {
+      color: #888888;
+      font-size: 0.8rem;
+    }
+
+    .remove-file {
+      background: #ff0080;
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .remove-file:hover {
+      background: #cc0066;
+      box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
     }
 
     .generate-btn {
@@ -344,6 +488,19 @@
       box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
     }
 
+    .processing-status {
+      background: linear-gradient(145deg, #001a33, #002244);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+
     @media (max-width: 768px) {
       .header h1 {
         font-size: 2.5rem;
@@ -356,6 +513,10 @@
       .flashcards-container {
         grid-template-columns: 1fr;
       }
+
+      .input-tabs {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -367,7 +528,7 @@
   <div class="container">
     <div class="header">
       <h1 onclick="window.location.href='dashboard.html'">AI Flashcard Generator</h1>
-      <p>Transform your notes into interactive flashcards with AI</p>
+      <p>Transform your content into interactive flashcards with AI</p>
       <div class="powered-by">
         <span class="gemini-logo"></span>
         Powered by Google Gemini
@@ -375,12 +536,72 @@
     </div>
 
     <div class="input-section">
-      <div class="form-group">
-        <label for="notesInput">Your Notes</label>
-        <textarea 
-          id="notesInput" 
-          placeholder="Paste your study notes, lecture content, or any text you want to convert into flashcards..."
-        ></textarea>
+      <div class="input-tabs">
+        <button class="tab-btn active" onclick="showTab('text')">
+          📝 Text
+        </button>
+        <button class="tab-btn" onclick="showTab('file')">
+          📄 Files
+        </button>
+        <button class="tab-btn" onclick="showTab('audio')">
+          🎵 Audio
+        </button>
+        <button class="tab-btn" onclick="showTab('video')">
+          🎬 Video
+        </button>
+      </div>
+
+      <!-- Text Input Tab -->
+      <div id="text-tab" class="tab-content active">
+        <div class="form-group">
+          <label for="notesInput">Your Notes</label>
+          <textarea 
+            id="notesInput" 
+            placeholder="Paste your study notes, lecture content, or any text you want to convert into flashcards..."
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- File Upload Tab -->
+      <div id="file-tab" class="tab-content">
+        <div class="form-group">
+          <label>Upload Documents</label>
+          <div class="file-upload" id="fileUpload">
+            <input type="file" id="fileInput" multiple accept=".pdf,.txt,.doc,.docx">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Drop files here or click to browse</div>
+            <div class="upload-subtext">Supports PDF, TXT, DOC, DOCX files</div>
+          </div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+      </div>
+
+      <!-- Audio Upload Tab -->
+      <div id="audio-tab" class="tab-content">
+        <div class="form-group">
+          <label>Upload Audio Files</label>
+          <div class="file-upload" id="audioUpload">
+            <input type="file" id="audioInput" multiple accept=".mp3,.wav,.m4a,.ogg">
+            <div class="upload-icon">🎵</div>
+            <div class="upload-text">Drop audio files here or click to browse</div>
+            <div class="upload-subtext">Supports MP3, WAV, M4A, OGG files</div>
+          </div>
+          <div class="file-list" id="audioList"></div>
+        </div>
+      </div>
+
+      <!-- Video Upload Tab -->
+      <div id="video-tab" class="tab-content">
+        <div class="form-group">
+          <label>Upload Video Files</label>
+          <div class="file-upload" id="videoUpload">
+            <input type="file" id="videoInput" multiple accept=".mp4,.avi,.mov,.mkv">
+            <div class="upload-icon">🎬</div>
+            <div class="upload-text">Drop video files here or click to browse</div>
+            <div class="upload-subtext">Supports MP4, AVI, MOV, MKV files</div>
+          </div>
+          <div class="file-list" id="videoList"></div>
+        </div>
       </div>
 
       <button class="generate-btn" onclick="generateFlashcards()">
@@ -390,54 +611,170 @@
 
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      Generating flashcards with Gemini AI...
+      <span id="loadingText">Generating flashcards with Gemini AI...</span>
     </div>
 
+    <div id="processingStatus"></div>
     <div id="errorContainer"></div>
     <div class="flashcards-container" id="flashcardsContainer"></div>
   </div>
 
   <script>
+    let uploadedFiles = [];
+    let currentTab = 'text';
+
+    function showTab(tabName) {
+      currentTab = tabName;
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName + '-tab').classList.add('active');
+    }
+
+    // File upload handlers
+    function setupFileUpload(uploadId, inputId, listId, fileType) {
+      const uploadArea = document.getElementById(uploadId);
+      const fileInput = document.getElementById(inputId);
+      const fileList = document.getElementById(listId);
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files, fileType, listId);
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files, fileType, listId);
+      });
+    }
+
+    function handleFiles(files, fileType, listId) {
+      Array.from(files).forEach(file => {
+        const fileObj = {
+          file: file,
+          name: file.name,
+          size: formatFileSize(file.size),
+          type: fileType,
+          id: Date.now() + Math.random()
+        };
+        
+        uploadedFiles.push(fileObj);
+        displayFile(fileObj, listId);
+      });
+    }
+
+    function displayFile(fileObj, listId) {
+      const fileList = document.getElementById(listId);
+      const fileItem = document.createElement('div');
+      fileItem.className = 'file-item';
+      fileItem.innerHTML = `
+        <div class="file-info">
+          <div class="file-icon">${getFileIcon(fileObj.type)}</div>
+          <div class="file-details">
+            <div class="file-name">${fileObj.name}</div>
+            <div class="file-size">${fileObj.size}</div>
+          </div>
+        </div>
+        <button class="remove-file" onclick="removeFile('${fileObj.id}', this)">Remove</button>
+      `;
+      fileList.appendChild(fileItem);
+    }
+
+    function removeFile(fileId, buttonElement) {
+      uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+      buttonElement.parentElement.remove();
+    }
+
+    function getFileIcon(fileType) {
+      switch(fileType) {
+        case 'file': return '📄';
+        case 'audio': return '🎵';
+        case 'video': return '🎬';
+        default: return '📄';
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
     async function generateFlashcards() {
-      const notesText = document.getElementById('notesInput').value.trim();
       const loadingEl = document.getElementById('loading');
+      const loadingText = document.getElementById('loadingText');
       const errorContainer = document.getElementById('errorContainer');
+      const processingStatus = document.getElementById('processingStatus');
       const generateBtn = document.querySelector('.generate-btn');
       
-      // Clear previous errors
+      // Clear previous errors and status
       errorContainer.innerHTML = '';
+      processingStatus.innerHTML = '';
       
-      if (!notesText) {
-        showError('Please enter your notes.');
+      let content = '';
+      
+      if (currentTab === 'text') {
+        content = document.getElementById('notesInput').value.trim();
+        if (!content) {
+          showError('Please enter your notes.');
+          return;
+        }
+      } else if (uploadedFiles.length === 0) {
+        showError('Please upload at least one file.');
         return;
       }
 
       // Show loading state
       generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating...';
+      generateBtn.textContent = 'Processing...';
       loadingEl.classList.add('show');
 
       try {
-        const response = await fetch('/api/generate-flashcards', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            notes: notesText
-          })
-        });
+        if (currentTab === 'text') {
+          // Process text directly
+          await processContent(content);
+        } else {
+          // Process uploaded files
+          const formData = new FormData();
+          uploadedFiles.forEach(fileObj => {
+            formData.append('files', fileObj.file);
+          });
+          formData.append('type', currentTab);
 
-        const data = await response.json();
+          loadingText.textContent = 'Processing uploaded files...';
+          
+          const response = await fetch('/api/process-files', {
+            method: 'POST',
+            body: formData
+          });
 
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to generate flashcards');
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to process files');
+          }
+
+          showProcessingStatus(data.message);
+          await processContent(data.extractedText);
         }
-
-        displayFlashcards(data.flashcards);
       } catch (error) {
         console.error('Error:', error);
-        showError(error.message || 'An error occurred while generating flashcards. Please try again.');
+        showError(error.message || 'An error occurred while processing. Please try again.');
       } finally {
         // Reset loading state
         generateBtn.disabled = false;
@@ -446,12 +783,35 @@
       }
     }
 
+    async function processContent(content) {
+      const loadingText = document.getElementById('loadingText');
+      loadingText.textContent = 'Generating flashcards with Gemini AI...';
+
+      const response = await fetch('/api/generate-flashcards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          notes: content
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate flashcards');
+      }
+
+      displayFlashcards(data.flashcards);
+    }
+
     function displayFlashcards(flashcards) {
       const container = document.getElementById('flashcardsContainer');
       container.innerHTML = '';
 
       if (!flashcards || flashcards.length === 0) {
-        showError('No flashcards were generated. Please try with different notes.');
+        showError('No flashcards were generated. Please try with different content.');
         return;
       }
 
@@ -481,11 +841,23 @@
       errorContainer.innerHTML = `<div class="error">${escapeHtml(message)}</div>`;
     }
 
+    function showProcessingStatus(message) {
+      const processingStatus = document.getElementById('processingStatus');
+      processingStatus.innerHTML = `<div class="processing-status">${escapeHtml(message)}</div>`;
+    }
+
     function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
     }
+
+    // Initialize file upload handlers
+    document.addEventListener('DOMContentLoaded', () => {
+      setupFileUpload('fileUpload', 'fileInput', 'fileList', 'file');
+      setupFileUpload('audioUpload', 'audioInput', 'audioList', 'audio');
+      setupFileUpload('videoUpload', 'videoInput', 'videoList', 'video');
+    });
 
     // Allow Enter key to generate flashcards when in textarea
     document.getElementById('notesInput').addEventListener('keydown', function(e) {
