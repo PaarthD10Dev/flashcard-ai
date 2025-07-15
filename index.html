@@ -34,6 +34,12 @@
       font-weight: 700;
       margin-bottom: 10px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .header h1:hover {
+      opacity: 0.8;
     }
 
     .header p {
@@ -49,6 +55,25 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+    }
+
+    .back-to-dashboard {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .back-to-dashboard:hover {
+      background: rgba(255,255,255,0.2);
     }
 
     .gemini-logo {
@@ -240,9 +265,13 @@
   </style>
 </head>
 <body>
+  <button class="back-to-dashboard" onclick="window.location.href='dashboard.html'">
+    ← Dashboard
+  </button>
+  
   <div class="container">
     <div class="header">
-      <h1>AI Flashcard Generator</h1>
+      <h1 onclick="window.location.href='dashboard.html'">AI Flashcard Generator</h1>
       <p>Transform your notes into interactive flashcards with AI</p>
       <div class="powered-by">
         <span class="gemini-logo"></span>

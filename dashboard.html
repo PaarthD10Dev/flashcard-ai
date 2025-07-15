@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #2d3748;
+      color: white;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .create-btn {
+      background: #e2e8f0;
+      color: #2d3748;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 24px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .create-btn:hover {
+      background: #cbd5e0;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .view-toggle {
+      background: #4a5568;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-toggle.active {
+      background: #667eea;
+    }
+
+    .sort-dropdown {
+      background: #4a5568;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+    }
+
+    .flashcard-set {
+      background: #4a5568;
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flashcard-set:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .icon-books { background: linear-gradient(135deg, #48bb78, #38a169); }
+    .icon-telescope { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .icon-atom { background: linear-gradient(135deg, #9f7aea, #805ad5); }
+    .icon-book { background: linear-gradient(135deg, #4299e1, #3182ce); }
+    .icon-test-tube { background: linear-gradient(135deg, #48bb78, #38a169); }
+    .icon-pattern { background: linear-gradient(135deg, #ed64a6, #d53f8c); }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      color: #a0aec0;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .menu-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #a0aec0;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .flashcard-set:hover .menu-btn {
+      opacity: 1;
+    }
+
+    .menu-btn:hover {
+      background: #2d3748;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="create-btn" onclick="window.location.href='index.html'">
+      <span>+</span>
+      Create new
+    </button>
+    
+    <div class="controls">
+      <button class="view-toggle active">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+        </svg>
+      </button>
+      <button class="view-toggle">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+      </button>
+      <select class="sort-dropdown">
+        <option>Most recent</option>
+        <option>Alphabetical</option>
+        <option>Most studied</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="flashcard-set">
+      <div class="card-icon icon-books">📚</div>
+      <div class="card-title">The Rise of Nationalism in Europe</div>
+      <div class="card-meta">
+        <span>Jun 16, 2025</span>
+        <span>•</span>
+        <span>1 source</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+
+    <div class="flashcard-set">
+      <div class="card-icon icon-telescope">🔭</div>
+      <div class="card-title">Light: Reflection and Refraction</div>
+      <div class="card-meta">
+        <span>Apr 2, 2025</span>
+        <span>•</span>
+        <span>1 source</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+
+    <div class="flashcard-set">
+      <div class="card-icon icon-atom">⚛️</div>
+      <div class="card-title">Feynman's Quantum Universe</div>
+      <div class="card-meta">
+        <span>Jul 2, 2025</span>
+        <span>•</span>
+        <span>8 sources</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+
+    <div class="flashcard-set">
+      <div class="card-icon icon-book">📖</div>
+      <div class="card-title">Power-Sharing</div>
+      <div class="card-meta">
+        <span>Mar 15, 2025</span>
+        <span>•</span>
+        <span>2 sources</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+
+    <div class="flashcard-set">
+      <div class="card-icon icon-test-tube">🧪</div>
+      <div class="card-title">Chemical Reactions and Equations</div>
+      <div class="card-meta">
+        <span>Feb 28, 2025</span>
+        <span>•</span>
+        <span>3 sources</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+
+    <div class="flashcard-set">
+      <div class="card-icon icon-pattern">📝</div>
+      <div class="card-title">Untitled notebook</div>
+      <div class="card-meta">
+        <span>Jan 20, 2025</span>
+        <span>•</span>
+        <span>1 source</span>
+      </div>
+      <button class="menu-btn">⋯</button>
+    </div>
+  </div>
+
+  <script>
+    // Add click handlers for flashcard sets
+    document.querySelectorAll('.flashcard-set').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('menu-btn')) {
+          // Navigate to flashcard view or edit mode
+          console.log('Opening flashcard set:', card.querySelector('.card-title').textContent);
+        }
+      });
+    });
+
+    // View toggle functionality
+    document.querySelectorAll('.view-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-toggle').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
