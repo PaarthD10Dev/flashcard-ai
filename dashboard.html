@@ -13,10 +13,27 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #2d3748;
-      color: white;
+      background: #000000;
+      color: #ffffff;
       min-height: 100vh;
       padding: 24px;
+      position: relative;
+    }
+
+    /* Fluorescent background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 80%, #00ff41 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, #ff0080 0%, transparent 50%),
+                  radial-gradient(circle at 40% 40%, #00ffff 0%, transparent 50%);
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: -1;
     }
 
     .header {
@@ -24,127 +41,209 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 40px;
+      border-bottom: 2px solid #111111;
+      padding-bottom: 20px;
     }
 
     .create-btn {
-      background: #e2e8f0;
-      color: #2d3748;
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      color: #000000;
       border: none;
-      padding: 12px 20px;
-      border-radius: 24px;
-      font-weight: 500;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      gap: 10px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
     }
 
     .create-btn:hover {
-      background: #cbd5e0;
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+      background: linear-gradient(135deg, #00ff41, #00ff41);
     }
 
     .controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .view-toggle {
-      background: #4a5568;
-      border: none;
-      padding: 8px;
-      border-radius: 6px;
-      color: white;
+      background: #111111;
+      border: 2px solid #333333;
+      padding: 12px;
+      border-radius: 8px;
+      color: #ffffff;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.3s ease;
     }
 
     .view-toggle.active {
-      background: #667eea;
+      background: #ff0080;
+      border-color: #ff0080;
+      box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+    }
+
+    .view-toggle:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
 
     .sort-dropdown {
-      background: #4a5568;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      background: #111111;
+      color: #ffffff;
+      border: 2px solid #333333;
+      padding: 12px 20px;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .sort-dropdown:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      max-width: 1400px;
     }
 
     .flashcard-set {
-      background: #4a5568;
-      border-radius: 12px;
-      padding: 24px;
+      background: linear-gradient(145deg, #111111, #1a1a1a);
+      border: 2px solid #222222;
+      border-radius: 16px;
+      padding: 30px;
       position: relative;
       cursor: pointer;
-      transition: all 0.3s ease;
-      min-height: 180px;
+      transition: all 0.4s ease;
+      min-height: 200px;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+    }
+
+    .flashcard-set::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00ff41, #00ffff, #ff0080, #00ff41);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .flashcard-set:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      transform: translateY(-8px);
+      border-color: #333333;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8),
+                  0 0 30px rgba(0, 255, 65, 0.1);
+    }
+
+    .flashcard-set:hover::before {
+      opacity: 1;
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
-      margin-bottom: 16px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
+      font-weight: bold;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
     }
 
-    .icon-books { background: linear-gradient(135deg, #48bb78, #38a169); }
-    .icon-telescope { background: linear-gradient(135deg, #667eea, #764ba2); }
-    .icon-atom { background: linear-gradient(135deg, #9f7aea, #805ad5); }
-    .icon-book { background: linear-gradient(135deg, #4299e1, #3182ce); }
-    .icon-test-tube { background: linear-gradient(135deg, #48bb78, #38a169); }
-    .icon-pattern { background: linear-gradient(135deg, #ed64a6, #d53f8c); }
+    .icon-books { 
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+    .icon-telescope { 
+      background: linear-gradient(135deg, #00ffff, #0099cc);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    .icon-atom { 
+      background: linear-gradient(135deg, #ff0080, #cc0066);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+    }
+    .icon-book { 
+      background: linear-gradient(135deg, #ffff00, #cccc00);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+    }
+    .icon-test-tube { 
+      background: linear-gradient(135deg, #ff4000, #cc3300);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 64, 0, 0.3);
+    }
+    .icon-pattern { 
+      background: linear-gradient(135deg, #8000ff, #6600cc);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(128, 0, 255, 0.3);
+    }
+
+    .flashcard-set:hover .card-icon {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+    }
 
     .card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      line-height: 1.4;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.3;
       flex-grow: 1;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .card-meta {
-      color: #a0aec0;
-      font-size: 0.875rem;
+      color: #888888;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .menu-btn {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: #a0aec0;
+      top: 20px;
+      right: 20px;
+      background: #222222;
+      border: 2px solid #333333;
+      color: #ffffff;
       cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
+      padding: 8px;
+      border-radius: 8px;
       opacity: 0;
-      transition: opacity 0.2s ease;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      font-size: 16px;
     }
 
     .flashcard-set:hover .menu-btn {
@@ -152,8 +251,27 @@
     }
 
     .menu-btn:hover {
-      background: #2d3748;
-      color: white;
+      background: #00ffff;
+      color: #000000;
+      border-color: #00ffff;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+
+    /* Fluorescent accent lines */
+    .accent-line {
+      position: fixed;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ff41, transparent);
+      top: 50%;
+      left: 0;
+      right: 0;
+      opacity: 0.1;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.3; }
     }
 
     @media (max-width: 768px) {
@@ -163,34 +281,40 @@
       
       .header {
         flex-direction: column;
-        gap: 16px;
+        gap: 20px;
         align-items: stretch;
+      }
+
+      .controls {
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
+  <div class="accent-line"></div>
+  
   <div class="header">
     <button class="create-btn" onclick="window.location.href='index.html'">
       <span>+</span>
-      Create new
+      Create New
     </button>
     
     <div class="controls">
       <button class="view-toggle active">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
           <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
         </svg>
       </button>
       <button class="view-toggle">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
           <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
         </svg>
       </button>
       <select class="sort-dropdown">
-        <option>Most recent</option>
-        <option>Alphabetical</option>
-        <option>Most studied</option>
+        <option>MOST RECENT</option>
+        <option>ALPHABETICAL</option>
+        <option>MOST STUDIED</option>
       </select>
     </div>
   </div>
@@ -200,9 +324,9 @@
       <div class="card-icon icon-books">📚</div>
       <div class="card-title">The Rise of Nationalism in Europe</div>
       <div class="card-meta">
-        <span>Jun 16, 2025</span>
+        <span>JUN 16, 2025</span>
         <span>•</span>
-        <span>1 source</span>
+        <span>1 SOURCE</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
@@ -211,9 +335,9 @@
       <div class="card-icon icon-telescope">🔭</div>
       <div class="card-title">Light: Reflection and Refraction</div>
       <div class="card-meta">
-        <span>Apr 2, 2025</span>
+        <span>APR 2, 2025</span>
         <span>•</span>
-        <span>1 source</span>
+        <span>1 SOURCE</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
@@ -222,9 +346,9 @@
       <div class="card-icon icon-atom">⚛️</div>
       <div class="card-title">Feynman's Quantum Universe</div>
       <div class="card-meta">
-        <span>Jul 2, 2025</span>
+        <span>JUL 2, 2025</span>
         <span>•</span>
-        <span>8 sources</span>
+        <span>8 SOURCES</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
@@ -233,9 +357,9 @@
       <div class="card-icon icon-book">📖</div>
       <div class="card-title">Power-Sharing</div>
       <div class="card-meta">
-        <span>Mar 15, 2025</span>
+        <span>MAR 15, 2025</span>
         <span>•</span>
-        <span>2 sources</span>
+        <span>2 SOURCES</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
@@ -244,9 +368,9 @@
       <div class="card-icon icon-test-tube">🧪</div>
       <div class="card-title">Chemical Reactions and Equations</div>
       <div class="card-meta">
-        <span>Feb 28, 2025</span>
+        <span>FEB 28, 2025</span>
         <span>•</span>
-        <span>3 sources</span>
+        <span>3 SOURCES</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
@@ -255,9 +379,9 @@
       <div class="card-icon icon-pattern">📝</div>
       <div class="card-title">Untitled notebook</div>
       <div class="card-meta">
-        <span>Jan 20, 2025</span>
+        <span>JAN 20, 2025</span>
         <span>•</span>
-        <span>1 source</span>
+        <span>1 SOURCE</span>
       </div>
       <button class="menu-btn">⋯</button>
     </div>
