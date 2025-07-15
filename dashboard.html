@@ -392,8 +392,8 @@
     document.querySelectorAll('.flashcard-set').forEach(card => {
       card.addEventListener('click', (e) => {
         if (!e.target.classList.contains('menu-btn')) {
-          // Navigate to flashcard view or edit mode
-          console.log('Opening flashcard set:', card.querySelector('.card-title').textContent);
+          const setName = card.querySelector('.card-title').textContent;
+          window.location.href = `flashcard-viewer.html?set=${encodeURIComponent(setName)}`;
         }
       });
     });

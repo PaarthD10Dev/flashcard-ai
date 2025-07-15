@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard Viewer</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 24px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 80%, #00ff41 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, #ff0080 0%, transparent 50%),
+                  radial-gradient(circle at 40% 40%, #00ffff 0%, transparent 50%);
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #111111;
+      padding-bottom: 20px;
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #111111, #222222);
+      color: #00ffff;
+      border: 2px solid #00ffff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: #00ffff;
+      color: #000000;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      color: #000000;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+
+    .action-btn.mindmap {
+      background: linear-gradient(135deg, #ff0080, #cc0066);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+    }
+
+    .action-btn.anki {
+      background: linear-gradient(135deg, #00ffff, #0099cc);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+    }
+
+    .action-btn.mindmap:hover {
+      box-shadow: 0 0 30px rgba(255, 0, 128, 0.6);
+    }
+
+    .action-btn.anki:hover {
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    }
+
+    .content-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 30px;
+      background: #111111;
+      border-radius: 12px;
+      padding: 4px;
+      border: 2px solid #222222;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      color: #888888;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      color: #000000;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .flashcards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .flashcard {
+      background: linear-gradient(145deg, #111111, #1a1a1a);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #222222;
+      overflow: hidden;
+    }
+
+    .flashcard::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff0080, #00ffff, #00ff41, #ff0080);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .flashcard:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.9),
+                  0 0 20px rgba(0, 255, 65, 0.2);
+      border-color: #333333;
+    }
+
+    .flashcard:hover::before {
+      opacity: 1;
+    }
+
+    .flashcard.flipped .question {
+      display: none;
+    }
+
+    .flashcard.flipped .answer {
+      display: block;
+    }
+
+    .question {
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .answer {
+      display: none;
+      color: #cccccc;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      flex-grow: 1;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .flip-indicator {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #00ffff, #0099cc);
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    #mindmapContainer {
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(145deg, #111111, #1a1a1a);
+      border: 2px solid #222222;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #mindmapContainer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00ff41, #00ffff, #ff0080, #00ff41);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .mindmap-controls {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mindmap-btn {
+      background: linear-gradient(135deg, #222222, #333333);
+      color: #ffffff;
+      border: 2px solid #444444;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mindmap-btn:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .title {
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .action-buttons {
+        justify-content: center;
+      }
+
+      .flashcards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+    <h1 class="title" id="setTitle">Flashcard Set</h1>
+    <div class="action-buttons">
+      <button class="action-btn mindmap" onclick="showMindmap()">
+        🧠 Create Mindmap
+      </button>
+      <button class="action-btn anki" onclick="exportToAnki()">
+        📥 Export to Anki
+      </button>
+    </div>
+  </div>
+
+  <div class="content-tabs">
+    <button class="tab-btn active" onclick="showTab('flashcards')">Flashcards</button>
+    <button class="tab-btn" onclick="showTab('mindmap')">Mindmap</button>
+  </div>
+
+  <div id="flashcards-tab" class="tab-content active">
+    <div class="flashcards-grid" id="flashcardsGrid">
+      <!-- Sample flashcards will be loaded here -->
+    </div>
+  </div>
+
+  <div id="mindmap-tab" class="tab-content">
+    <div class="mindmap-controls">
+      <button class="mindmap-btn" onclick="resetMindmap()">Reset View</button>
+      <button class="mindmap-btn" onclick="exportMindmap()">Export as PNG</button>
+      <button class="mindmap-btn" onclick="togglePhysics()">Toggle Physics</button>
+    </div>
+    <div id="mindmapContainer"></div>
+  </div>
+
+  <script>
+    let currentFlashcards = [];
+    let mindmapNetwork = null;
+    let physicsEnabled = true;
+
+    // Sample flashcards data
+    const sampleFlashcards = [
+      {
+        question: "What was the main cause of nationalism in 19th century Europe?",
+        answer: "The rise of liberal ideas, cultural awakening, and political upheavals following the French Revolution and Napoleonic Wars."
+      },
+      {
+        question: "Which event is considered the spark of German nationalism?",
+        answer: "The resistance against Napoleon's occupation and the formation of the German Confederation in 1815."
+      },
+      {
+        question: "What role did language play in European nationalism?",
+        answer: "Language became a symbol of national identity, with movements promoting native languages over imperial languages like Latin or French."
+      },
+      {
+        question: "How did the Congress of Vienna affect nationalism?",
+        answer: "It attempted to restore the old order but inadvertently strengthened nationalist movements by ignoring ethnic boundaries."
+      },
+      {
+        question: "What was the significance of the 1848 revolutions?",
+        answer: "They marked the peak of liberal nationalism in Europe, though most were ultimately unsuccessful in achieving immediate goals."
+      }
+    ];
+
+    function initializePage() {
+      // Get flashcard set name from URL parameter or use default
+      const urlParams = new URLSearchParams(window.location.search);
+      const setName = urlParams.get('set') || 'The Rise of Nationalism in Europe';
+      document.getElementById('setTitle').textContent = setName;
+      
+      // Load flashcards
+      currentFlashcards = sampleFlashcards;
+      displayFlashcards();
+      
+      // Initialize mindmap
+      initializeMindmap();
+    }
+
+    function displayFlashcards() {
+      const container = document.getElementById('flashcardsGrid');
+      container.innerHTML = '';
+
+      currentFlashcards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'flashcard';
+        cardEl.onclick = () => flipCard(cardEl);
+        
+        cardEl.innerHTML = `
+          <div class="question">${escapeHtml(card.question)}</div>
+          <div class="answer">${escapeHtml(card.answer)}</div>
+          <div class="flip-indicator">Click to flip</div>
+        `;
+        
+        container.appendChild(cardEl);
+      });
+    }
+
+    function flipCard(cardEl) {
+      cardEl.classList.toggle('flipped');
+      const indicator = cardEl.querySelector('.flip-indicator');
+      indicator.textContent = cardEl.classList.contains('flipped') ? 'Click for question' : 'Click to flip';
+    }
+
+    function showTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName + '-tab').classList.add('active');
+      
+      if (tabName === 'mindmap' && mindmapNetwork) {
+        setTimeout(() => mindmapNetwork.fit(), 100);
+      }
+    }
+
+    function showMindmap() {
+      showTab('mindmap');
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    }
+
+    function initializeMindmap() {
+      const container = document.getElementById('mindmapContainer');
+      
+      // Create nodes and edges from flashcards
+      const nodes = new vis.DataSet();
+      const edges = new vis.DataSet();
+      
+      // Central topic node
+      const setName = document.getElementById('setTitle').textContent;
+      nodes.add({
+        id: 'central',
+        label: setName,
+        color: { background: '#00ff41', border: '#00cc33' },
+        font: { color: '#000000', size: 16, face: 'arial black' },
+        size: 40,
+        shape: 'circle'
+      });
+      
+      // Add flashcard nodes
+      currentFlashcards.forEach((card, index) => {
+        const questionId = `q${index}`;
+        const answerId = `a${index}`;
+        
+        // Question node
+        nodes.add({
+          id: questionId,
+          label: card.question.length > 50 ? card.question.substring(0, 50) + '...' : card.question,
+          color: { background: '#ff0080', border: '#cc0066' },
+          font: { color: '#ffffff', size: 12 },
+          size: 25,
+          shape: 'box'
+        });
+        
+        // Answer node
+        nodes.add({
+          id: answerId,
+          label: card.answer.length > 50 ? card.answer.substring(0, 50) + '...' : card.answer,
+          color: { background: '#00ffff', border: '#0099cc' },
+          font: { color: '#000000', size: 12 },
+          size: 25,
+          shape: 'ellipse'
+        });
+        
+        // Connect central to question
+        edges.add({
+          from: 'central',
+          to: questionId,
+          color: { color: '#00ff41' },
+          width: 2
+        });
+        
+        // Connect question to answer
+        edges.add({
+          from: questionId,
+          to: answerId,
+          color: { color: '#ff0080' },
+          width: 2,
+          dashes: true
+        });
+      });
+      
+      const data = { nodes: nodes, edges: edges };
+      const options = {
+        physics: {
+          enabled: true,
+          stabilization: { iterations: 100 }
+        },
+        nodes: {
+          borderWidth: 2,
+          shadow: true
+        },
+        edges: {
+          shadow: true,
+          smooth: { type: 'continuous' }
+        },
+        interaction: {
+          dragNodes: true,
+          dragView: true,
+          zoomView: true
+        }
+      };
+      
+      mindmapNetwork = new vis.Network(container, data, options);
+    }
+
+    function resetMindmap() {
+      if (mindmapNetwork) {
+        mindmapNetwork.fit();
+      }
+    }
+
+    function togglePhysics() {
+      if (mindmapNetwork) {
+        physicsEnabled = !physicsEnabled;
+        mindmapNetwork.setOptions({ physics: { enabled: physicsEnabled } });
+      }
+    }
+
+    function exportMindmap() {
+      const container = document.getElementById('mindmapContainer');
+      html2canvas(container).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'mindmap.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    function exportToAnki() {
+      let ankiContent = '';
+      
+      currentFlashcards.forEach(card => {
+        // Anki format: Front\tBack\n
+        const front = card.question.replace(/\t/g, ' ').replace(/\n/g, ' ');
+        const back = card.answer.replace(/\t/g, ' ').replace(/\n/g, ' ');
+        ankiContent += `${front}\t${back}\n`;
+      });
+      
+      const blob = new Blob([ankiContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${document.getElementById('setTitle').textContent.replace(/[^a-zA-Z0-9]/g, '_')}_anki.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      // Show success message
+      alert('Anki deck exported! Import the .txt file into Anki using File > Import.');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize page when loaded
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+</body>
+</html>

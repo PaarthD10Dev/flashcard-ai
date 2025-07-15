@@ -23,6 +23,16 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Serve flashcard viewer
+app.get('/flashcard-viewer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'flashcard-viewer.html'));
+});
+
+// Serve dashboard
+app.get('/dashboard.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 app.post('/api/generate-flashcards', async (req, res) => {
   try {
     const { notes } = req.body;
