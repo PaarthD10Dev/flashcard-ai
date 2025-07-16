@@ -5,7 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import fs from 'fs';
-import pdfParse from 'pdf-parse';
 
 dotenv.config();
 
@@ -82,10 +81,8 @@ app.post('/api/process-files', upload.array('files', 10), async (req, res) => {
         let fileText = '';
         
         if (file.mimetype === 'application/pdf') {
-          // Process PDF
-          const dataBuffer = fs.readFileSync(file.path);
-          const pdfData = await pdfParse(dataBuffer);
-          fileText = pdfData.text;
+          // PDF parsing temporarily disabled - will be implemented with alternative solution
+          fileText = 'PDF processing is currently being updated. Please use text input for now.';
         } else if (file.mimetype === 'text/plain') {
           // Process text file
           fileText = fs.readFileSync(file.path, 'utf8');
