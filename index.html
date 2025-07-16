@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #000000;
+      background: #1a1a1a;
       min-height: 100vh;
       padding: 20px;
       position: relative;
@@ -27,30 +27,86 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: radial-gradient(circle at 30% 70%, #00ff41 0%, transparent 50%),
-                  radial-gradient(circle at 70% 30%, #ff0080 0%, transparent 50%),
-                  radial-gradient(circle at 50% 50%, #00ffff 0%, transparent 50%);
-      opacity: 0.05;
+      background: radial-gradient(circle at 30% 70%, #4f46e5 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, #7c3aed 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, #06b6d4 0%, transparent 50%);
+      opacity: 0.03;
       pointer-events: none;
       z-index: -1;
     }
 
-    .container {
-      max-width: 1200px;
+    .main-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      max-width: 1400px;
       margin: 0 auto;
+    }
+
+    .sidebar {
+      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #333333;
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+    }
+
+    .sidebar h3 {
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .source-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #333333;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      color: #cccccc;
+      font-size: 0.9rem;
+      border: 1px solid #444444;
+    }
+
+    .source-icon {
+      width: 16px;
+      height: 16px;
+      background: #4f46e5;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 100%;
     }
 
     .header {
       text-align: center;
       margin-bottom: 40px;
+      padding: 40px 0;
+      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+      border-radius: 16px;
+      border: 1px solid #333333;
     }
 
     .header h1 {
       color: white;
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 900;
       margin-bottom: 10px;
-      text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+      text-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
       cursor: pointer;
       transition: opacity 0.3s ease;
       text-transform: uppercase;
@@ -58,19 +114,18 @@
     }
 
     .header h1:hover {
-      text-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+      text-shadow: 0 0 30px rgba(79, 70, 229, 0.6);
     }
 
     .header p {
-      color: rgba(255,255,255,0.9);
+      color: rgba(255,255,255,0.7);
       font-size: 1.2rem;
       font-weight: 600;
-      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .powered-by {
-      color: #00ffff;
+      color: #06b6d4;
       font-size: 1rem;
       margin-top: 5px;
       display: flex;
@@ -80,7 +135,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
     }
 
     .back-to-dashboard {
@@ -88,8 +143,8 @@
       top: 20px;
       left: 20px;
       background: linear-gradient(135deg, #111111, #222222);
-      color: #00ffff;
-      border: 2px solid #00ffff;
+      color: #06b6d4;
+      border: 2px solid #06b6d4;
       padding: 12px 20px;
       border-radius: 12px;
       cursor: pointer;
@@ -99,32 +154,32 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
     }
 
     .back-to-dashboard:hover {
-      background: #00ffff;
+      background: #06b6d4;
       color: #000000;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
       transform: translateY(-2px);
     }
 
     .gemini-logo {
       width: 20px;
       height: 20px;
-      background: linear-gradient(45deg, #00ff41, #00ffff, #ff0080, #ffff00);
+      background: linear-gradient(45deg, #4f46e5, #06b6d4, #7c3aed, #f59e0b);
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+      box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
     }
 
     .input-section {
-      background: linear-gradient(145deg, #111111, #1a1a1a);
+      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
       border-radius: 16px;
       padding: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       margin-bottom: 40px;
-      border: 2px solid #222222;
+      border: 1px solid #333333;
       position: relative;
       overflow: hidden;
     }
@@ -136,7 +191,7 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #00ff41, #00ffff, #ff0080, #00ff41);
+      background: linear-gradient(90deg, #4f46e5, #06b6d4, #7c3aed, #4f46e5);
       animation: shimmer 2s linear infinite;
     }
 
@@ -149,16 +204,16 @@
       display: flex;
       gap: 4px;
       margin-bottom: 30px;
-      background: #0a0a0a;
+      background: #1a1a1a;
       border-radius: 12px;
       padding: 4px;
-      border: 2px solid #222222;
+      border: 1px solid #333333;
     }
 
     .tab-btn {
       flex: 1;
       background: transparent;
-      color: #888888;
+      color: #999999;
       border: none;
       padding: 16px 24px;
       border-radius: 8px;
@@ -175,9 +230,9 @@
     }
 
     .tab-btn.active {
-      background: linear-gradient(135deg, #00ff41, #00cc33);
-      color: #000000;
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+      background: linear-gradient(135deg, #4f46e5, #3730a3);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
     }
 
     .tab-content {
@@ -198,19 +253,18 @@
       color: #ffffff;
       margin-bottom: 8px;
       font-size: 1.1rem;
-      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     textarea {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid #333333;
+      border: 1px solid #444444;
       border-radius: 8px;
       font-size: 16px;
       transition: all 0.3s ease;
       font-family: inherit;
-      background: #000000;
+      background: #1a1a1a;
       color: #ffffff;
       height: 200px;
       resize: vertical;
@@ -218,25 +272,25 @@
 
     textarea:focus {
       outline: none;
-      border-color: #00ff41;
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+      border-color: #4f46e5;
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
     }
 
     .file-upload {
-      border: 3px dashed #333333;
+      border: 2px dashed #444444;
       border-radius: 12px;
       padding: 40px;
       text-align: center;
       transition: all 0.3s ease;
-      background: #0a0a0a;
+      background: #1a1a1a;
       cursor: pointer;
       position: relative;
     }
 
     .file-upload.dragover {
-      border-color: #00ff41;
-      background: rgba(0, 255, 65, 0.05);
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+      border-color: #4f46e5;
+      background: rgba(79, 70, 229, 0.05);
+      box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
     }
 
     .file-upload input[type="file"] {
@@ -250,7 +304,7 @@
     .upload-icon {
       font-size: 3rem;
       margin-bottom: 16px;
-      color: #00ffff;
+      color: #06b6d4;
     }
 
     .upload-text {
@@ -258,12 +312,11 @@
       font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 8px;
-      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .upload-subtext {
-      color: #888888;
+      color: #999999;
       font-size: 0.9rem;
       font-weight: 600;
     }
@@ -273,8 +326,8 @@
     }
 
     .file-item {
-      background: #1a1a1a;
-      border: 2px solid #333333;
+      background: #2a2a2a;
+      border: 1px solid #444444;
       border-radius: 8px;
       padding: 12px 16px;
       margin-bottom: 8px;
@@ -310,7 +363,7 @@
     }
 
     .remove-file {
-      background: #ff0080;
+      background: #ef4444;
       color: #ffffff;
       border: none;
       padding: 6px 12px;
@@ -322,14 +375,14 @@
     }
 
     .remove-file:hover {
-      background: #cc0066;
-      box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
+      background: #dc2626;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
     }
 
     .generate-btn {
-      background: linear-gradient(135deg, #00ff41, #00cc33);
-      color: #000000;
-      border: 2px solid #00ff41;
+      background: linear-gradient(135deg, #4f46e5, #3730a3);
+      color: #ffffff;
+      border: 2px solid #4f46e5;
       padding: 18px 40px;
       font-size: 18px;
       font-weight: 800;
@@ -339,13 +392,13 @@
       width: 100%;
       text-transform: uppercase;
       letter-spacing: 2px;
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+      box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
     }
 
     .generate-btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
-      background: linear-gradient(135deg, #00ff41, #00ff41);
+      box-shadow: 0 0 30px rgba(79, 70, 229, 0.7);
+      background: linear-gradient(135deg, #4f46e5, #4f46e5);
     }
 
     .generate-btn:disabled {
@@ -358,12 +411,12 @@
       display: none;
       text-align: center;
       margin: 20px 0;
-      color: #00ffff;
+      color: #06b6d4;
       font-size: 1.3rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
     }
 
     .loading.show {
@@ -374,12 +427,12 @@
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(0, 255, 255, 0.3);
+      border: 3px solid rgba(6, 182, 212, 0.3);
       border-radius: 50%;
-      border-top-color: #00ffff;
+      border-top-color: #06b6d4;
       animation: spin 1s ease-in-out infinite;
       margin-right: 10px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
     }
 
     @keyframes spin {
@@ -394,17 +447,17 @@
     }
 
     .flashcard {
-      background: linear-gradient(145deg, #111111, #1a1a1a);
+      background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
       border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
       min-height: 180px;
       display: flex;
       flex-direction: column;
-      border: 2px solid #222222;
+      border: 1px solid #333333;
       overflow: hidden;
     }
 
@@ -415,16 +468,16 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #ff0080, #00ffff, #00ff41, #ff0080);
+      background: linear-gradient(90deg, #7c3aed, #06b6d4, #4f46e5, #7c3aed);
       opacity: 0;
       transition: opacity 0.3s ease;
     }
 
     .flashcard:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.9),
-                  0 0 20px rgba(0, 255, 65, 0.2);
-      border-color: #333333;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.7),
+                  0 0 20px rgba(79, 70, 229, 0.2);
+      border-color: #444444;
     }
 
     .flashcard:hover::before {
@@ -464,44 +517,53 @@
       position: absolute;
       bottom: 12px;
       right: 12px;
-      background: linear-gradient(135deg, #00ffff, #0099cc);
-      color: #000000;
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #ffffff;
       padding: 6px 12px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
     }
 
     .error {
-      background: linear-gradient(145deg, #330000, #440000);
-      border: 2px solid #ff0080;
-      color: #ff0080;
+      background: linear-gradient(145deg, #3f1f1f, #2a1a1a);
+      border: 1px solid #ef4444;
+      color: #ef4444;
       padding: 16px;
       border-radius: 12px;
       margin: 20px 0;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
     }
 
     .processing-status {
-      background: linear-gradient(145deg, #001a33, #002244);
-      border: 2px solid #00ffff;
-      color: #00ffff;
+      background: linear-gradient(145deg, #1f2937, #111827);
+      border: 1px solid #06b6d4;
+      color: #06b6d4;
       padding: 16px;
       border-radius: 12px;
       margin: 20px 0;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
     }
 
     @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .sidebar {
+        position: static;
+      }
+      
       .header h1 {
         font-size: 2.5rem;
       }
@@ -525,98 +587,122 @@
     ← Dashboard
   </button>
   
-  <div class="container">
-    <div class="header">
-      <h1 onclick="window.location.href='dashboard.html'">AI Flashcard Generator</h1>
-      <p>Transform your content into interactive flashcards with AI</p>
-      <div class="powered-by">
-        <span class="gemini-logo"></span>
-        Powered by Google Gemini
+  <div class="main-layout">
+    <div class="sidebar">
+      <h3>Sources</h3>
+      <div class="source-item">
+        <div class="source-icon"></div>
+        <span>Text Input</span>
+      </div>
+      <div class="source-item">
+        <div class="source-icon"></div>
+        <span>File Uploads</span>
+      </div>
+      <div class="source-item">
+        <div class="source-icon"></div>
+        <span>Audio Files</span>
+      </div>
+      <div class="source-item">
+        <div class="source-icon"></div>
+        <span>Video Files</span>
       </div>
     </div>
 
-    <div class="input-section">
-      <div class="input-tabs">
-        <button class="tab-btn active" onclick="showTab('text')">
-          📝 Text
-        </button>
-        <button class="tab-btn" onclick="showTab('file')">
-          📄 Files
-        </button>
-        <button class="tab-btn" onclick="showTab('audio')">
-          🎵 Audio
-        </button>
-        <button class="tab-btn" onclick="showTab('video')">
-          🎬 Video
-        </button>
-      </div>
-
-      <!-- Text Input Tab -->
-      <div id="text-tab" class="tab-content active">
-        <div class="form-group">
-          <label for="notesInput">Your Notes</label>
-          <textarea 
-            id="notesInput" 
-            placeholder="Paste your study notes, lecture content, or any text you want to convert into flashcards..."
-          ></textarea>
-        </div>
-      </div>
-
-      <!-- File Upload Tab -->
-      <div id="file-tab" class="tab-content">
-        <div class="form-group">
-          <label>Upload Documents</label>
-          <div class="file-upload" id="fileUpload">
-            <input type="file" id="fileInput" multiple accept=".pdf,.txt,.doc,.docx">
-            <div class="upload-icon">📄</div>
-            <div class="upload-text">Drop files here or click to browse</div>
-            <div class="upload-subtext">Supports PDF, TXT, DOC, DOCX files</div>
+    <div class="main-content">
+      <div class="container">
+        <div class="header">
+          <h1 onclick="window.location.href='dashboard.html'">AI Flashcard Generator</h1>
+          <p>Transform your content into interactive flashcards with AI</p>
+          <div class="powered-by">
+            <span class="gemini-logo"></span>
+            Powered by Google Gemini
           </div>
-          <div class="file-list" id="fileList"></div>
         </div>
-      </div>
 
-      <!-- Audio Upload Tab -->
-      <div id="audio-tab" class="tab-content">
-        <div class="form-group">
-          <label>Upload Audio Files</label>
-          <div class="file-upload" id="audioUpload">
-            <input type="file" id="audioInput" multiple accept=".mp3,.wav,.m4a,.ogg">
-            <div class="upload-icon">🎵</div>
-            <div class="upload-text">Drop audio files here or click to browse</div>
-            <div class="upload-subtext">Supports MP3, WAV, M4A, OGG files</div>
+        <div class="input-section">
+          <div class="input-tabs">
+            <button class="tab-btn active" onclick="showTab('text')">
+              📝 Text
+            </button>
+            <button class="tab-btn" onclick="showTab('file')">
+              📄 Files
+            </button>
+            <button class="tab-btn" onclick="showTab('audio')">
+              🎵 Audio
+            </button>
+            <button class="tab-btn" onclick="showTab('video')">
+              🎬 Video
+            </button>
           </div>
-          <div class="file-list" id="audioList"></div>
-        </div>
-      </div>
 
-      <!-- Video Upload Tab -->
-      <div id="video-tab" class="tab-content">
-        <div class="form-group">
-          <label>Upload Video Files</label>
-          <div class="file-upload" id="videoUpload">
-            <input type="file" id="videoInput" multiple accept=".mp4,.avi,.mov,.mkv">
-            <div class="upload-icon">🎬</div>
-            <div class="upload-text">Drop video files here or click to browse</div>
-            <div class="upload-subtext">Supports MP4, AVI, MOV, MKV files</div>
+          <!-- Text Input Tab -->
+          <div id="text-tab" class="tab-content active">
+            <div class="form-group">
+              <label for="notesInput">Your Notes</label>
+              <textarea 
+                id="notesInput" 
+                placeholder="Paste your study notes, lecture content, or any text you want to convert into flashcards..."
+              ></textarea>
+            </div>
           </div>
-          <div class="file-list" id="videoList"></div>
-        </div>
-      </div>
 
-      <button class="generate-btn" onclick="generateFlashcards()">
-        Generate Flashcards
-      </button>
+          <!-- File Upload Tab -->
+          <div id="file-tab" class="tab-content">
+            <div class="form-group">
+              <label>Upload Documents</label>
+              <div class="file-upload" id="fileUpload">
+                <input type="file" id="fileInput" multiple accept=".pdf,.txt,.doc,.docx">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Drop files here or click to browse</div>
+                <div class="upload-subtext">Supports PDF, TXT, DOC, DOCX files</div>
+              </div>
+              <div class="file-list" id="fileList"></div>
+            </div>
+          </div>
+
+          <!-- Audio Upload Tab -->
+          <div id="audio-tab" class="tab-content">
+            <div class="form-group">
+              <label>Upload Audio Files</label>
+              <div class="file-upload" id="audioUpload">
+                <input type="file" id="audioInput" multiple accept=".mp3,.wav,.m4a,.ogg">
+                <div class="upload-icon">🎵</div>
+                <div class="upload-text">Drop audio files here or click to browse</div>
+                <div class="upload-subtext">Supports MP3, WAV, M4A, OGG files</div>
+              </div>
+              <div class="file-list" id="audioList"></div>
+            </div>
+          </div>
+
+          <!-- Video Upload Tab -->
+          <div id="video-tab" class="tab-content">
+            <div class="form-group">
+              <label>Upload Video Files</label>
+              <div class="file-upload" id="videoUpload">
+                <input type="file" id="videoInput" multiple accept=".mp4,.avi,.mov,.mkv">
+                <div class="upload-icon">🎬</div>
+                <div class="upload-text">Drop video files here or click to browse</div>
+                <div class="upload-subtext">Supports MP4, AVI, MOV, MKV files</div>
+              </div>
+              <div class="file-list" id="videoList"></div>
+            </div>
+          </div>
+
+          <button class="generate-btn" onclick="generateFlashcards()">
+            Generate Flashcards
+          </button>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <span id="loadingText">Generating flashcards with Gemini AI...</span>
+        </div>
+
+        <div id="processingStatus"></div>
+        <div id="errorContainer"></div>
+        <div class="flashcards-container" id="flashcardsContainer"></div>
+      </div>
     </div>
-
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <span id="loadingText">Generating flashcards with Gemini AI...</span>
-    </div>
-
-    <div id="processingStatus"></div>
-    <div id="errorContainer"></div>
-    <div class="flashcards-container" id="flashcardsContainer"></div>
   </div>
 
   <script>
