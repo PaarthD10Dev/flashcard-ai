@@ -139,9 +139,9 @@
     }
 
     .back-to-dashboard {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       background: linear-gradient(135deg, #111111, #222222);
       color: #06b6d4;
       border: 2px solid #06b6d4;
@@ -155,6 +155,9 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+      text-decoration: none;
+      margin-bottom: 20px;
+      width: fit-content;
     }
 
     .back-to-dashboard:hover {
@@ -164,6 +167,14 @@
       transform: translateY(-2px);
     }
 
+    .back-arrow {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .back-to-dashboard:hover .back-arrow {
+      transform: translateX(-3px);
+    }
     .gemini-logo {
       width: 20px;
       height: 20px;
@@ -583,12 +594,12 @@
   </style>
 </head>
 <body>
-  <button class="back-to-dashboard" onclick="window.location.href='dashboard.html'">
-    ← Dashboard
-  </button>
-  
   <div class="main-layout">
     <div class="sidebar">
+      <a href="dashboard.html" class="back-to-dashboard">
+        <span class="back-arrow">←</span>
+        Dashboard
+      </a>
       <h3>Sources</h3>
       <div class="source-item">
         <div class="source-icon"></div>
